@@ -1,5 +1,11 @@
 package com.imagecontourextraction;
 
+import org.potrace.Potrace;
+import org.potrace.PotraceBitmap;
+
+import java.io.File; // Import for File class
+import org.potrace.PathInfoList; // Import for PathInfoList class
+
 import android.app.Application;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
@@ -58,5 +64,18 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+  }
+
+  // Add this method for contour extraction
+  public static PathInfoList extractContours(String imagePath) {
+    try {
+        PotraceBitmap bitmap = PotraceBitmap.read(new File(imagePath));
+        Potrace potrace = new Potrace(bitmap);
+        potrace.process();
+        return potrace.getPathInfoList();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
   }
 }
