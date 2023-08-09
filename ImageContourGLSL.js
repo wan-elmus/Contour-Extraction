@@ -2,9 +2,11 @@
 /* eslint-disable react-native/no-inline-styles */
 // Image Contour GLSL
 
-import React, { useRef, useEffect } from 'react';
+// import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Image, View } from 'react-native';
 import GLView from 'react-native-gl';
+import ImagePicker from 'react-native-image-picker';
 import contourExtractionShaderSource from './contour_extraction.glsl';
 // import vertShader from './shaders/vertex.glsl'; // Add path to your vertex shader
 // import fragShader from './shaders/contour_extraction.glsl'; // Add path to your contour extraction shader
@@ -40,6 +42,24 @@ import contourExtractionShaderSource from './contour_extraction.glsl';
 
 const ImageContourGLSL = () => {
   const glRef = useRef(null);
+  const [imageTexture, setImageTexture] = useState(null);
+
+  const pickImage = useCallback(() => {
+    const options = {
+      title: 'Select Image',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.uri) {
+        const newTexture = loadTexture(glRef.current.getContext('webgl'), response.uri);
+        setImageTexture(newTexture);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (glRef.current) {
@@ -59,11 +79,12 @@ const ImageContourGLSL = () => {
       gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
 
       // Load image texture, bind it, and set uniforms
-      const imageTexture = loadTexture(gl, './original.jpg');
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, imageTexture);
-      const uTexture = gl.getUniformLocation(program, 'u_texture');
-      gl.uniform1i(uTexture, 0);
+      if (imageTexture) {
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, imageTexture);
+        const uTexture = gl.getUniformLocation(program, 'u_texture');
+        gl.uniform1i(uTexture, 0);
+      }
 
       // Render using shaders
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -112,7 +133,7 @@ const ImageContourGLSL = () => {
       gl.deleteTexture(contourTexture);
       gl.deleteProgram(contourExtractionProgram);
     }
-  }, []);
+  }, [imageTexture]);
 
   return (
     <View>
@@ -137,6 +158,8 @@ const ImageContourGLSL = () => {
             -1.0,  1.0,
             1.0,  1.0,
           ]);
+
+          pickImage();
 
           const aPosition = gl.getAttribLocation(program, 'a_position');
           const positionBuffer = gl.createBuffer();
@@ -204,7 +227,7 @@ function loadTexture(gl, imagePath) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
   };
-  image.src = imagePath; // Path to the image (e.g., 'original.jpeg')
+  image.src = imagePath;
 
   return texture;
 }
