@@ -19,11 +19,18 @@ import {
 
 import {
   Colors,
-  DebugInstructions,
+  // DebugInstructions,
   Header,
   LearnMoreLinks,
-  ReloadInstructions,
+  // ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+// import GLView from 'react-native-gl';
+// import ImageContourExtraction from './android/app/src/main/java/com/imagecontourextraction/ImageContourExtraction'; // Import the ImageContourExtraction component
+import ImageContourExtraction from './ImageContourExtraction';
+
+// import ImageContourGLSL from './android/app/src/main/java/com/imagecontourextraction/ImageContourGLSL'; // Import the ImageContourGLSL component
+import ImageContourGLSL from './ImageContourGLSL';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -76,19 +83,14 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
+          <Section title="Image Contour Extraction">
+            <ImageContourExtraction />{' '}
+            {/* Include the ImageContourExtraction component */}
           </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
+          <Section title="Image Contour GLSL">
+            <ImageContourGLSL /> {/* Include the ImageContourGLSL component */}
           </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
+          {/* Debug and Learn More sections */}
           <LearnMoreLinks />
         </View>
       </ScrollView>

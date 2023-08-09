@@ -66,7 +66,7 @@ public class MainApplication extends Application implements ReactApplication {
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
-  // Add this method for contour extraction
+  // method for contour extraction
   public static PathInfoList extractContours(String imagePath) {
     try {
         PotraceBitmap bitmap = PotraceBitmap.read(new File(imagePath));
