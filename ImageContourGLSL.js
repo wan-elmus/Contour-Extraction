@@ -8,8 +8,8 @@ import { Image, View } from 'react-native';
 import GLView from 'react-native-gl';
 import ImagePicker from 'react-native-image-picker';
 import contourExtractionShaderSource from './contour_extraction.glsl';
-// import vertShader from './shaders/vertex.glsl'; // Add path to your vertex shader
-// import fragShader from './shaders/contour_extraction.glsl'; // Add path to your contour extraction shader
+// import vertShader from './shaders/vertex.glsl'; // vertex shader
+// import fragShader from './shaders/contour_extraction.glsl'; //contour extraction shader
 
       const vertShader = `
       attribute vec2 a_position;
